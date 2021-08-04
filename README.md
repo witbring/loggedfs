@@ -8,7 +8,7 @@ sudo apt-get install libfuse-dev libpcre3-dev libxml2-dev xml2-config
 ## build
 ```bash
 $ make
-```bash
+```
 
 ## launch file system
 ```bash
