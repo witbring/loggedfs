@@ -12,12 +12,12 @@ $ make
 
 ## launch file system
 ```bash
-$ sudo ./loggedfs -f -p [absolute\_path]
+$ sudo ./loggedfs -f -p [absolute_path]
 ```
 
 ## now rock & roll
 ```bash
-$ cd [absolute\_path]
+$ cd [absolute_path]
 $ echo '#include<stdio.h>\nint main(){printf("hello world\\n");return 0;}' > hello.c
 $ gcc --save-temps hello.c -o hello
 $ ls
