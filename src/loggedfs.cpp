@@ -191,7 +191,7 @@ static int loggedFS_getattr(const char *orig_path, struct stat *stbuf)
     char *aPath = getAbsolutePath(orig_path);
     char *path = getRelativePath(orig_path);
     res = lstat(path, stbuf);
-    loggedfs_log(aPath, "getattr", res, "getattr %s", aPath);
+    //loggedfs_log(aPath, "getattr", res, "getattr %s", aPath);
     delete[] aPath;
     free(path);
     if (res == -1)
@@ -207,7 +207,7 @@ static int loggedFS_access(const char *orig_path, int mask)
     char *aPath = getAbsolutePath(orig_path);
     char *path = getRelativePath(orig_path);
     res = access(path, mask);
-    loggedfs_log(aPath, "access", res, "access %s", aPath);
+    //loggedfs_log(aPath, "access", res, "access %s", aPath);
     delete[] aPath;
     free(path);
     if (res == -1)
@@ -223,7 +223,7 @@ static int loggedFS_readlink(const char *orig_path, char *buf, size_t size)
     char *aPath = getAbsolutePath(orig_path);
     char *path = getRelativePath(orig_path);
     res = readlink(path, buf, size - 1);
-    loggedfs_log(aPath, "readlink", res, "readlink %s", aPath);
+    //loggedfs_log(aPath, "readlink", res, "readlink %s", aPath);
     delete[] aPath;
     free(path);
     if (res == -1)
@@ -251,7 +251,7 @@ static int loggedFS_readdir(const char *orig_path, void *buf, fuse_fill_dir_t fi
     if (dp == NULL)
     {
         res = -errno;
-        loggedfs_log(aPath, "readdir", -1, "readdir %s", aPath);
+        //loggedfs_log(aPath, "readdir", -1, "readdir %s", aPath);
         delete[] aPath;
         free(path);
         return res;
@@ -268,7 +268,7 @@ static int loggedFS_readdir(const char *orig_path, void *buf, fuse_fill_dir_t fi
     }
 
     closedir(dp);
-    loggedfs_log(aPath, "readdir", 0, "readdir %s", aPath);
+    //loggedfs_log(aPath, "readdir", 0, "readdir %s", aPath);
     delete[] aPath;
     free(path);
 
@@ -284,28 +284,29 @@ static int loggedFS_mknod(const char *orig_path, mode_t mode, dev_t rdev)
     if (S_ISREG(mode))
     {
         res = open(path, O_CREAT | O_EXCL | O_WRONLY, mode);
-        loggedfs_log(aPath, "mknod", res, "mknod %s %o S_IFREG (normal file creation)", aPath, mode);
+        //loggedfs_log(aPath, "mknod", res, "mknod %s %o S_IFREG (normal file creation)", aPath, mode);
         if (res >= 0)
             res = close(res);
     }
     else if (S_ISFIFO(mode))
     {
         res = mkfifo(path, mode);
-        loggedfs_log(aPath, "mkfifo", res, "mkfifo %s %o S_IFFIFO (fifo creation)", aPath, mode);
+        //loggedfs_log(aPath, "mkfifo", res, "mkfifo %s %o S_IFFIFO (fifo creation)", aPath, mode);
     }
     else
     {
         res = mknod(path, mode, rdev);
         if (S_ISCHR(mode))
         {
-            loggedfs_log(aPath, "mknod", res, "mknod %s %o (character device creation)", aPath, mode);
+            //loggedfs_log(aPath, "mknod", res, "mknod %s %o (character device creation)", aPath, mode);
         }
         /*else if (S_IFBLK(mode))
 		{
-		loggedfs_log(aPath,"mknod",res,"mknod %s %o (block device creation)",aPath, mode);
+		//loggedfs_log(aPath,"mknod",res,"mknod %s %o (block device creation)",aPath, mode);
 		}*/
-        else
-            loggedfs_log(aPath, "mknod", res, "mknod %s %o", aPath, mode);
+        else{
+            //loggedfs_log(aPath, "mknod", res, "mknod %s %o", aPath, mode);
+        }
     }
 
     delete[] aPath;
@@ -329,7 +330,7 @@ static int loggedFS_mkdir(const char *orig_path, mode_t mode)
     char *aPath = getAbsolutePath(orig_path);
     char *path = getRelativePath(orig_path);
     res = mkdir(path, mode);
-    loggedfs_log(path, "mkdir", res, "mkdir %s %o", aPath, mode);
+    //loggedfs_log(path, "mkdir", res, "mkdir %s %o", aPath, mode);
     delete[] aPath;
 
     if (res == -1)
@@ -350,7 +351,7 @@ static int loggedFS_unlink(const char *orig_path)
     char *aPath = getAbsolutePath(orig_path);
     char *path = getRelativePath(orig_path);
     res = unlink(path);
-    loggedfs_log(aPath, "unlink", res, "unlink %s", aPath);
+    //loggedfs_log(aPath, "unlink", res, "unlink %s", aPath);
     delete[] aPath;
     free(path);
 
@@ -366,7 +367,7 @@ static int loggedFS_rmdir(const char *orig_path)
     char *aPath = getAbsolutePath(orig_path);
     char *path = getRelativePath(orig_path);
     res = rmdir(path);
-    loggedfs_log(aPath, "rmdir", res, "rmdir %s", aPath);
+    //loggedfs_log(aPath, "rmdir", res, "rmdir %s", aPath);
     delete[] aPath;
     free(path);
     if (res == -1)
@@ -383,7 +384,7 @@ static int loggedFS_symlink(const char *from, const char *orig_to)
 
     res = symlink(from, to);
 
-    loggedfs_log(aTo, "symlink", res, "symlink from %s to %s", aTo, from);
+    //loggedfs_log(aTo, "symlink", res, "symlink from %s to %s", aTo, from);
     delete[] aTo;
 
     if (res == -1)
@@ -406,7 +407,7 @@ static int loggedFS_rename(const char *orig_from, const char *orig_to)
     char *from = getRelativePath(orig_from);
     char *to = getRelativePath(orig_to);
     res = rename(from, to);
-    loggedfs_log(aFrom, "rename", res, "rename %s to %s", aFrom, aTo);
+    //loggedfs_log(aFrom, "rename", res, "rename %s to %s", aFrom, aTo);
     delete[] aFrom;
     delete[] aTo;
     free(from);
@@ -428,7 +429,7 @@ static int loggedFS_link(const char *orig_from, const char *orig_to)
     char *to = getRelativePath(orig_to);
 
     res = link(from, to);
-    loggedfs_log(aTo, "link", res, "hard link from %s to %s", aTo, aFrom);
+    //loggedfs_log(aTo, "link", res, "hard link from %s to %s", aTo, aFrom);
     delete[] aFrom;
     delete[] aTo;
     free(from);
@@ -452,7 +453,7 @@ static int loggedFS_chmod(const char *orig_path, mode_t mode)
     char *aPath = getAbsolutePath(orig_path);
     char *path = getRelativePath(orig_path);
     res = chmod(path, mode);
-    loggedfs_log(aPath, "chmod", res, "chmod %s to %o", aPath, mode);
+    //loggedfs_log(aPath, "chmod", res, "chmod %s to %o", aPath, mode);
     delete[] aPath;
     free(path);
 
@@ -488,10 +489,11 @@ static int loggedFS_chown(const char *orig_path, uid_t uid, gid_t gid)
     char *username = getusername(uid);
     char *groupname = getgroupname(gid);
 
-    if (username != NULL && groupname != NULL)
-        loggedfs_log(aPath, "chown", res, "chown %s to %d:%d %s:%s", aPath, uid, gid, username, groupname);
-    else
-        loggedfs_log(aPath, "chown", res, "chown %s to %d:%d", aPath, uid, gid);
+    if (username != NULL && groupname != NULL){
+        //loggedfs_log(aPath, "chown", res, "chown %s to %d:%d %s:%s", aPath, uid, gid, username, groupname);
+    }else{
+        //loggedfs_log(aPath, "chown", res, "chown %s to %d:%d", aPath, uid, gid);
+    }
     delete[] aPath;
     free(path);
 
@@ -500,15 +502,95 @@ static int loggedFS_chown(const char *orig_path, uid_t uid, gid_t gid)
 
     return 0;
 }
+static int is_assembly_file(const char *abs_path)
+{
+    int len = strlen(abs_path);
+    return 0 == strcmp(".s", abs_path+len-2);
+}
+static void eliminate_extension(char *filename)
+{
+    int len = strlen(filename);
+    int cnt = 0;
+    for(cnt = len-1; cnt > 0 ; --cnt)
+    {
+        if( filename[cnt] == '.')
+            break;
+    }
+    if(cnt > 0){
+        for(; cnt < len;++cnt)
+            filename[cnt] = 0;
+    }
 
+}
+static int my_copy(const char *from, const char *to)
+{
+    char    buf[BUFSIZ];
+    FILE    *in, *out;
+    size_t  n;
+
+    in = fopen(from, "rb" );
+    out= fopen(to, "wb" );
+    loggedfs_log(from, "truncate", 0, "copy %s to %s",from, to);
+    while ( (n=fread(buf,1,BUFSIZ,in)) != 0 ) {
+        //loggedfs_log(from, "truncate", 0, "my copy %s to %d bytes",from, n);
+        fwrite( buf, 1, n, out );
+        //loggedfs_log(from, "truncate", 0, "my copy %s to %d bytes",to, n);
+    }
+    fclose(in);
+    fclose(out);
+    return 0;
+}
+#include <libgen.h>
+static int save_assembly_file(const char *abs_path)
+{
+
+    char *path1 = strdup(abs_path);
+    char *path2 = strdup(abs_path);
+    char* dir = dirname(path1);
+    char* filename = basename(path2);
+    eliminate_extension(filename);
+
+
+    //mkdir
+    char new_dir[4096*4];
+    strcpy(new_dir, dir);
+    strcat(new_dir, "/backup/");
+    mkdir(new_dir, 0777);
+
+
+    //rename
+    char new_path[4096*4];
+
+    int cnt = 0;
+    for(cnt = 0; cnt < 1000; ++cnt){
+        sprintf(new_path, "%s%s_%d.s", new_dir, filename, cnt);
+        if( access( new_path, F_OK ) == -1 ) {
+            my_copy(abs_path, new_path);
+            loggedfs_log(abs_path, "truncate", 0, "copy %s to %s", abs_path, new_path);
+            free(path2);
+            free(path1);
+            return 0;
+        }
+   }
+    loggedfs_log(abs_path, "truncate", 0, "FAIL copy %s", abs_path);
+    free(path2);
+    free(path1);
+    return -1;
+}
 static int loggedFS_truncate(const char *orig_path, off_t size)
 {
     int res;
 
     char *aPath = getAbsolutePath(orig_path);
     char *path = getRelativePath(orig_path);
+
+    if(is_assembly_file(aPath)){
+        save_assembly_file(aPath);
+    }
+
+
     res = truncate(path, size);
-    loggedfs_log(aPath, "truncate", res, "truncate %s to %d bytes", aPath, size);
+    //loggedfs_log(aPath, "truncate", res, "truncate %s to %d bytes", aPath, size);
     delete[] aPath;
     free(path);
 
@@ -525,7 +607,7 @@ static int loggedFS_utime(const char *orig_path, struct utimbuf *buf)
     char *aPath = getAbsolutePath(orig_path);
     char *path = getRelativePath(orig_path);
     res = utime(path, buf);
-    loggedfs_log(aPath, "utime", res, "utime %s", aPath);
+    //loggedfs_log(aPath, "utime", res, "utime %s", aPath);
     delete[] aPath;
     free(path);
 
@@ -546,7 +628,7 @@ static int loggedFS_utimens(const char *orig_path, const struct timespec ts[2])
 
     res = utimensat(AT_FDCWD, path, ts, AT_SYMLINK_NOFOLLOW);
 
-    loggedfs_log(aPath, "utimens", res, "utimens %s", aPath);
+    //loggedfs_log(aPath, "utimens", res, "utimens %s", aPath);
     delete[] aPath;
     free(path);
 
@@ -568,18 +650,19 @@ static int loggedFS_open(const char *orig_path, struct fuse_file_info *fi)
     // what type of open ? read, write, or read-write ?
     if (fi->flags & O_RDONLY)
     {
-        loggedfs_log(aPath, "open-readonly", res, "open readonly %s", aPath);
+        //loggedfs_log(aPath, "open-readonly", res, "open readonly %s", aPath);
     }
     else if (fi->flags & O_WRONLY)
     {
-        loggedfs_log(aPath, "open-writeonly", res, "open writeonly %s", aPath);
+        //loggedfs_log(aPath, "open-writeonly", res, "open writeonly %s", aPath);
     }
     else if (fi->flags & O_RDWR)
     {
-        loggedfs_log(aPath, "open-readwrite", res, "open readwrite %s", aPath);
+        //loggedfs_log(aPath, "open-readwrite", res, "open readwrite %s", aPath);
     }
-    else
-        loggedfs_log(aPath, "open", res, "open %s", aPath);
+    else{
+        //loggedfs_log(aPath, "open", res, "open %s", aPath);
+    }
 
     delete[] aPath;
     free(path);
@@ -597,16 +680,16 @@ static int loggedFS_read(const char *orig_path, char *buf, size_t size, off_t of
     char *aPath = getAbsolutePath(orig_path);
     int res;
 
-    loggedfs_log(aPath, "read", 0, "read %d bytes from %s at offset %d", size, aPath, offset);
+    //loggedfs_log(aPath, "read", 0, "read %d bytes from %s at offset %d", size, aPath, offset);
     res = pread(fi->fh, buf, size, offset);
     if (res == -1)
     {
         res = -errno;
-        loggedfs_log(aPath, "read", -1, "read %d bytes from %s at offset %d", size, aPath, offset);
+        //loggedfs_log(aPath, "read", -1, "read %d bytes from %s at offset %d", size, aPath, offset);
     }
     else
     {
-        loggedfs_log(aPath, "read", 0, "%d bytes read from %s at offset %d", res, aPath, offset);
+        //loggedfs_log(aPath, "read", 0, "%d bytes read from %s at offset %d", res, aPath, offset);
     }
     delete[] aPath;
     return res;
@@ -625,22 +708,23 @@ static int loggedFS_write(const char *orig_path, const char *buf, size_t size,
     if (fd == -1)
     {
         res = -errno;
-        loggedfs_log(aPath, "write", -1, "write %d bytes to %s at offset %d", size, aPath, offset);
+        //loggedfs_log(aPath, "write", -1, "write %d bytes to %s at offset %d", size, aPath, offset);
         delete[] aPath;
         free(path);
         return res;
     }
     else
     {
-        loggedfs_log(aPath, "write", 0, "write %d bytes to %s at offset %d", size, aPath, offset);
+        //loggedfs_log(aPath, "write", 0, "write %d bytes to %s at offset %d", size, aPath, offset);
     }
 
     res = pwrite(fd, buf, size, offset);
 
     if (res == -1)
         res = -errno;
-    else
-        loggedfs_log(aPath, "write", 0, "%d bytes written to %s at offset %d", res, aPath, offset);
+    else{
+        //loggedfs_log(aPath, "write", 0, "%d bytes written to %s at offset %d", res, aPath, offset);
+    }
 
     close(fd);
     delete[] aPath;
@@ -655,7 +739,7 @@ static int loggedFS_statfs(const char *orig_path, struct statvfs *stbuf)
     char *aPath = getAbsolutePath(orig_path);
     char *path = getRelativePath(orig_path);
     res = statvfs(path, stbuf);
-    loggedfs_log(aPath, "statfs", res, "statfs %s", aPath);
+    //loggedfs_log(aPath, "statfs", res, "statfs %s", aPath);
     delete[] aPath;
     free(path);
     if (res == -1)
@@ -669,7 +753,7 @@ static int loggedFS_release(const char *orig_path, struct fuse_file_info *fi)
     char *aPath = getAbsolutePath(orig_path);
     (void)orig_path;
 
-    loggedfs_log(aPath, "release", 0, "release %s", aPath);
+    //loggedfs_log(aPath, "release", 0, "release %s", aPath);
     delete[] aPath;
 
     close(fi->fh);
@@ -683,7 +767,7 @@ static int loggedFS_fsync(const char *orig_path, int isdatasync,
     (void)orig_path;
     (void)isdatasync;
     (void)fi;
-    loggedfs_log(aPath, "fsync", 0, "fsync %s", aPath);
+    //loggedfs_log(aPath, "fsync", 0, "fsync %s", aPath);
     delete[] aPath;
     return 0;
 }
