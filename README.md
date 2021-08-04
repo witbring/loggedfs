@@ -15,7 +15,7 @@ $ make
 $ sudo ./loggedfs -f -p [absolute_path]
 ```
 
-## now rock & roll
+## Use case #1
 ```bash
 $ cd [absolute_path]
 $ echo '#include<stdio.h>\nint main(){printf("hello world\\n");return 0;}' > hello.c
@@ -28,3 +28,16 @@ backup  hello  hello.c  hello.i  hello.o  hello.s
 $ ls backup
 hello\_0.s
 ```
+
+### Use case #2
+```bash
+$ sudo ./loggedfs -f -p /home/user/project/binutils-2.31.1
+```
+
+```
+$ cd /home/user/project/binutils-2.31.1/x64/clang/pie/o0-bfd/
+$ make clean; make
+```
+
+
+
