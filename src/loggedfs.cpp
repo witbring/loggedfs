@@ -584,7 +584,7 @@ static int loggedFS_truncate(const char *orig_path, off_t size)
     char *aPath = getAbsolutePath(orig_path);
     char *path = getRelativePath(orig_path);
 
-    if(is_assembly_file(aPath)){
+    if(is_assembly_file(aPath) && size==0){
         save_assembly_file(aPath);
     }
 
